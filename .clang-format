@@ -1,0 +1,18 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 80
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction: true
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterStruct: false
+AlwaysBreakAfterReturnType: TopLevelDefinitions
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+IndentCaseLabels: false
+PointerAlignment: Left
+SpaceAfterCStyleCast: false
+SpacesInParentheses: false
+Standard: c++17

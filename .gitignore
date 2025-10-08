@@ -1,0 +1,51 @@
+# Build artifacts
+src/obj/
+src/rv64-emu
+src/Windows/rv64-emu.exe
+*.o
+*.exe
+*.out
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+.python-version
+
+# uv
+.uv/
+
+# Generated deliverables
+deliverables/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.directory
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# Test outputs
+*.diff
+*.test-output
+
+# Documentation builds
+docs/_build/
+
+# Miscellaneous
+*.local.md
