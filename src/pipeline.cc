@@ -29,7 +29,8 @@ Pipeline::Pipeline(bool pipelining,
                                                                nStalls,
                                                                debugMode));
   stages.emplace_back(std::make_unique<ExecuteStage>(pipelining,
-                                                     id_ex, ex_m));
+                                                     id_ex, ex_m,
+                                                     PC));
   stages.emplace_back(std::make_unique<MemoryStage>(pipelining,
                                                     ex_m, m_wb,
                                                     dataMemory));

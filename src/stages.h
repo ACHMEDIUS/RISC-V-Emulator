@@ -71,6 +71,8 @@ struct ID_EXRegisters
   RegNumber rd{};
   RegNumber rs1{};
   RegNumber rs2{};
+  Opcode opcode{ Opcode::OP };
+  uint8_t funct3{};
   ControlSignals control{};
 };
 
@@ -233,9 +235,10 @@ class ExecuteStage : public Stage
   public:
     ExecuteStage(bool pipelining,
                  const ID_EXRegisters &id_ex,
-                 EX_MRegisters &ex_m)
+                 EX_MRegisters &ex_m,
+                 MemAddress &PC)
       : Stage(pipelining),
-      id_ex(id_ex), ex_m(ex_m), alu()
+      id_ex(id_ex), ex_m(ex_m), alu(), PCRef(PC)
     { }
 
     void propagate() override;
@@ -246,9 +249,16 @@ class ExecuteStage : public Stage
     EX_MRegisters &ex_m;
 
     ALU alu;
+    MemAddress &PCRef;
+    bool pcWriteEnable{};
+    MemAddress nextPC{};
+
     MemAddress PC{};
     RegValue aluResult{};
     RegValue writeData{};
+
+    bool evaluateBranch(uint8_t funct3, RegValue lhs, RegValue rhs) const;
+    MemAddress computePCRelativeTarget(MemAddress base, int64_t offset) const;
 };
 
 /*

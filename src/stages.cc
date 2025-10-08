@@ -277,6 +277,8 @@ void InstructionDecodeStage::clockPulse()
   id_ex.rd = decoder.getRD();
   id_ex.rs1 = decoder.getRS1();
   id_ex.rs2 = decoder.getRS2();
+  id_ex.opcode = decoder.getOpcode();
+  id_ex.funct3 = decoder.getFunct3();
   id_ex.control = control;
 }
 
@@ -289,20 +291,59 @@ ExecuteStage::propagate()
 {
   PC = id_ex.PC;
 
-  /* Set ALU inputs */
-  alu.setA(id_ex.readData1);
+  pcWriteEnable = false;
+  nextPC = 0;
 
-  /* Select second ALU operand: register or immediate */
-  if (id_ex.control.getALUSrc())
-    alu.setB(id_ex.immediate);
-  else
-    alu.setB(id_ex.readData2);
+  /* Select ALU operands */
+  RegValue operandA = id_ex.readData1;
+  if (id_ex.opcode == Opcode::AUIPC)
+    operandA = id_ex.PC;
+  else if (id_ex.opcode == Opcode::LUI)
+    operandA = 0;
 
-  /* Set ALU operation */
+  RegValue operandB = id_ex.control.getALUSrc()
+                        ? static_cast<RegValue>(id_ex.immediate)
+                        : id_ex.readData2;
+
+  alu.setA(operandA);
+  alu.setB(operandB);
   alu.setOp(id_ex.control.getALUOp());
 
   /* Compute ALU result */
   aluResult = alu.getResult();
+
+  if (id_ex.opcode == Opcode::AUIPC)
+    aluResult = static_cast<RegValue>(computePCRelativeTarget(id_ex.PC,
+                                                              id_ex.immediate));
+
+  if (id_ex.control.getBranch())
+    {
+      if (evaluateBranch(id_ex.funct3, id_ex.readData1, id_ex.readData2))
+        {
+          nextPC = computePCRelativeTarget(id_ex.PC, id_ex.immediate);
+          pcWriteEnable = true;
+        }
+    }
+
+  if (id_ex.control.getJump())
+    {
+      RegValue returnAddress = id_ex.PC + 4;
+      aluResult = returnAddress;
+
+      if (id_ex.opcode == Opcode::JAL)
+        nextPC = computePCRelativeTarget(id_ex.PC, id_ex.immediate);
+      else if (id_ex.opcode == Opcode::JALR)
+        {
+          int64_t base = static_cast<int64_t>(id_ex.readData1);
+          int64_t rawTarget = base + id_ex.immediate;
+          nextPC = static_cast<MemAddress>(
+            static_cast<uint64_t>(rawTarget) & ~static_cast<uint64_t>(1));
+        }
+      else
+        nextPC = id_ex.PC + 4;
+
+      pcWriteEnable = true;
+    }
 
   /* Pass through write data (for stores) */
   writeData = id_ex.readData2;
@@ -317,6 +358,40 @@ ExecuteStage::clockPulse()
   ex_m.writeData = writeData;
   ex_m.rd = id_ex.rd;
   ex_m.control = id_ex.control;
+
+  if (pcWriteEnable)
+    {
+      PCRef = nextPC;
+      pcWriteEnable = false;
+    }
+}
+
+bool
+ExecuteStage::evaluateBranch(uint8_t funct3, RegValue lhs, RegValue rhs) const
+{
+  switch (funct3)
+    {
+      case 0x0:  /* BEQ */
+        return lhs == rhs;
+      case 0x1:  /* BNE */
+        return lhs != rhs;
+      case 0x4:  /* BLT */
+        return static_cast<int64_t>(lhs) < static_cast<int64_t>(rhs);
+      case 0x5:  /* BGE */
+        return static_cast<int64_t>(lhs) >= static_cast<int64_t>(rhs);
+      case 0x6:  /* BLTU */
+        return lhs < rhs;
+      case 0x7:  /* BGEU */
+        return lhs >= rhs;
+      default:
+        return false;
+    }
+}
+
+MemAddress
+ExecuteStage::computePCRelativeTarget(MemAddress base, int64_t offset) const
+{
+  return static_cast<MemAddress>(base + static_cast<int64_t>(offset));
 }
 
 /*
@@ -331,6 +406,10 @@ MemoryStage::propagate()
   /* Pass through ALU result */
   aluResult = ex_m.aluResult;
   memData = 0;
+
+  /* Reset control lines to avoid reusing previous instruction state */
+  dataMemory.setReadEnable(false);
+  dataMemory.setWriteEnable(false);
 
   /* Only configure memory if there's a memory operation */
   if (ex_m.control.getMemRead() || ex_m.control.getMemWrite())
