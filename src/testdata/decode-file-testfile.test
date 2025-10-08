@@ -1,0 +1,7 @@
+./rv64-emu -X testdata/decode-testfile.txt
+0x005080b3	add r1, r1, r5
+0x00012341	addiw r6, r6, $16  	(compressed)
+0x00000000	addi r8, r2, $0  	(compressed)
+0x0004234f	illegal instruction
+0x0000000a	slli r0, r0, $2  	(compressed)
+Error: failed to parse instruction at line 6
