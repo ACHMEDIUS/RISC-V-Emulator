@@ -9,10 +9,7 @@
 
 #include <iostream>
 
-SysStatus::SysStatus(const MemAddress base)
-  : base{ base }
-{
-}
+SysStatus::SysStatus(const MemAddress base) : base{base} {}
 
 /*
  * MemoryInterface
@@ -41,7 +38,6 @@ SysStatus::readDoubleWord(MemAddress addr)
 {
   throw IllegalAccess("Not supported on sysstatus interface");
 }
-
 
 void
 SysStatus::writeByte(MemAddress addr, uint8_t value)

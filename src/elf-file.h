@@ -10,9 +10,9 @@
 
 #include "memory-interface.h"
 
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
 
 #ifdef _MSC_VER
 #include <windows.h>
@@ -23,41 +23,37 @@
  * the Processor class, these memories are added to the memory bus
  * of the system.
  */
-class ELFFile
-{
-  public:
-    ELFFile(std::string_view filename);
-    ~ELFFile();
+class ELFFile {
+public:
+  ELFFile(std::string_view filename);
+  ~ELFFile();
 
-    void load(std::string_view filename);
-    void unload();
+  void load(std::string_view filename);
+  void unload();
 
-    std::vector<std::unique_ptr<MemoryInterface>> createMemories() const;
-    bool getTextSegment(std::vector<std::byte> &segmentData,
-                        MemAddress &segmentBase,
-                        size_t &segmentSize) const;
-    uint64_t getEntrypoint() const;
+  std::vector<std::unique_ptr<MemoryInterface>> createMemories() const;
+  bool getTextSegment(std::vector<std::byte>& segmentData,
+                      MemAddress& segmentBase, size_t& segmentSize) const;
+  uint64_t getEntrypoint() const;
 
+  ELFFile(const ELFFile&) = delete;
+  ELFFile& operator=(const ELFFile&) = delete;
 
-    ELFFile(const ELFFile &) = delete;
-    ELFFile &operator=(const ELFFile &) = delete;
-    
-  private:
+private:
 #ifdef _MSC_VER
-    HANDLE fd{};
-    HANDLE mapping{};
+  HANDLE fd{};
+  HANDLE mapping{};
 #else
-    int fd{};
-    size_t programSize{};
+  int fd{};
+  size_t programSize{};
 #endif
-    void *mapAddr = nullptr;
+  void* mapAddr = nullptr;
 
-    bool isBad = true;
+  bool isBad = true;
 
-    bool isELF() const;
-    bool isTarget(const uint8_t elf_class,
-                  const uint8_t endianness,
-                  const uint8_t machine) const;
+  bool isELF() const;
+  bool isTarget(const uint8_t elf_class, const uint8_t endianness,
+                const uint8_t machine) const;
 };
 
 #endif /* __ELF_FILE_H__ */

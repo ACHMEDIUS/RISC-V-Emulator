@@ -14,44 +14,42 @@
 #include "pipeline.h"
 #include "sys-status.h"
 
+class Processor {
+public:
+  Processor(ELFFile& program, bool pipelining, bool debugMode = false);
 
-class Processor
-{
-  public:
-    Processor(ELFFile &program, bool pipelining, bool debugMode=false);
+  Processor(const Processor&) = delete;
+  Processor& operator=(const Processor&) = delete;
 
-    Processor(const Processor &) = delete;
-    Processor &operator=(const Processor &) = delete;
+  /* Command-line register initialization */
+  void initRegister(RegNumber regnum, RegValue value);
+  RegValue getRegister(RegNumber regnum) const;
 
-    /* Command-line register initialization */
-    void initRegister(RegNumber regnum, RegValue value);
-    RegValue getRegister(RegNumber regnum) const;
+  /* Instruction execution steps */
+  bool run(bool testMode = false);
 
-    /* Instruction execution steps */
-    bool run(bool testMode=false);
+  /* Debugging and statistics */
+  void dumpRegisters() const;
+  void dumpStatistics() const;
 
-    /* Debugging and statistics */
-    void dumpRegisters() const;
-    void dumpStatistics() const;
+private:
+  /* Statistics */
+  uint64_t nCycles{};
 
-  private:
-    /* Statistics */
-    uint64_t nCycles{};
+  /* Components shared by multiple stages or components. */
+  RegisterFile regfile{};
+  InstructionDecoder decoder{};
 
-    /* Components shared by multiple stages or components. */
-    RegisterFile regfile{};
-    InstructionDecoder decoder{};
+  MemoryBus bus;
+  InstructionMemory instructionMemory;
+  DataMemory dataMemory;
 
-    MemoryBus bus;
-    InstructionMemory instructionMemory;
-    DataMemory dataMemory;
+  MemAddress PC{};
 
-    MemAddress PC{};
+  Pipeline pipeline;
 
-    Pipeline pipeline;
-
-    /* Memory bus clients */
-    SysStatus *sysStatus{};  /* no ownership */
+  /* Memory bus clients */
+  SysStatus* sysStatus{}; /* no ownership */
 };
 
 #endif /* __PROCESSOR_H__ */

@@ -8,8 +8,8 @@
 #ifndef __ARCH_H__
 #define __ARCH_H__
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 /* For now these values are hard-coded for a 64-bit RISC-V
  * architecture.
@@ -25,6 +25,5 @@ static constexpr size_t MaxRegs = 256;
  * to mark the end of unit test cases.
  */
 static constexpr uint32_t TestEndMarker = 0xddffccff;
-
 
 #endif /* __ARCH_H__ */

@@ -7,8 +7,8 @@
 
 #include "memory-control.h"
 
-InstructionMemory::InstructionMemory(MemoryBus &bus)
-  : bus(bus), size(0), addr(0)
+InstructionMemory::InstructionMemory(MemoryBus& bus)
+    : bus(bus), size(0), addr(0)
 {
 }
 
@@ -30,24 +30,19 @@ InstructionMemory::setAddress(const MemAddress addr)
 RegValue
 InstructionMemory::getValue() const
 {
-  switch (size)
-    {
-      case 2:
-        return bus.readHalfWord(addr);
+  switch (size) {
+  case 2:
+    return bus.readHalfWord(addr);
 
-      case 4:
-        return bus.readWord(addr);
+  case 4:
+    return bus.readWord(addr);
 
-      default:
-        throw IllegalAccess("Invalid size " + std::to_string(size));
-    }
+  default:
+    throw IllegalAccess("Invalid size " + std::to_string(size));
+  }
 }
 
-
-DataMemory::DataMemory(MemoryBus &bus)
-  : bus{ bus }
-{
-}
+DataMemory::DataMemory(MemoryBus& bus) : bus{bus} {}
 
 void
 DataMemory::setSize(const uint8_t size)
@@ -91,45 +86,41 @@ DataMemory::getDataOut(bool signExtend) const
 
   RegValue data = 0;
 
-  switch (size)
-    {
-      case 1:  /* Byte */
-        {
-          uint8_t byte = bus.readByte(addr);
-          if (signExtend)
-            data = static_cast<int64_t>(static_cast<int8_t>(byte));
-          else
-            data = byte;
-        }
-        break;
+  switch (size) {
+  case 1: /* Byte */
+  {
+    uint8_t byte = bus.readByte(addr);
+    if (signExtend)
+      data = static_cast<int64_t>(static_cast<int8_t>(byte));
+    else
+      data = byte;
+  } break;
 
-      case 2:  /* Half-word (16-bit) */
-        {
-          uint16_t half = bus.readHalfWord(addr);
-          if (signExtend)
-            data = static_cast<int64_t>(static_cast<int16_t>(half));
-          else
-            data = half;
-        }
-        break;
+  case 2: /* Half-word (16-bit) */
+  {
+    uint16_t half = bus.readHalfWord(addr);
+    if (signExtend)
+      data = static_cast<int64_t>(static_cast<int16_t>(half));
+    else
+      data = half;
+  } break;
 
-      case 4:  /* Word (32-bit) */
-        {
-          uint32_t word = bus.readWord(addr);
-          if (signExtend)
-            data = static_cast<int64_t>(static_cast<int32_t>(word));
-          else
-            data = word;
-        }
-        break;
+  case 4: /* Word (32-bit) */
+  {
+    uint32_t word = bus.readWord(addr);
+    if (signExtend)
+      data = static_cast<int64_t>(static_cast<int32_t>(word));
+    else
+      data = word;
+  } break;
 
-      case 8:  /* Double-word (64-bit) */
-        data = bus.readDoubleWord(addr);
-        break;
+  case 8: /* Double-word (64-bit) */
+    data = bus.readDoubleWord(addr);
+    break;
 
-      default:
-        throw IllegalAccess("Invalid size " + std::to_string(size));
-    }
+  default:
+    throw IllegalAccess("Invalid size " + std::to_string(size));
+  }
 
   return data;
 }
@@ -141,25 +132,24 @@ DataMemory::clockPulse() const
     return;
 
   /* Write to memory based on size */
-  switch (size)
-    {
-      case 1:  /* Byte */
-        bus.writeByte(addr, static_cast<uint8_t>(dataIn));
-        break;
+  switch (size) {
+  case 1: /* Byte */
+    bus.writeByte(addr, static_cast<uint8_t>(dataIn));
+    break;
 
-      case 2:  /* Half-word */
-        bus.writeHalfWord(addr, static_cast<uint16_t>(dataIn));
-        break;
+  case 2: /* Half-word */
+    bus.writeHalfWord(addr, static_cast<uint16_t>(dataIn));
+    break;
 
-      case 4:  /* Word */
-        bus.writeWord(addr, static_cast<uint32_t>(dataIn));
-        break;
+  case 4: /* Word */
+    bus.writeWord(addr, static_cast<uint32_t>(dataIn));
+    break;
 
-      case 8:  /* Double-word */
-        bus.writeDoubleWord(addr, dataIn);
-        break;
+  case 8: /* Double-word */
+    bus.writeDoubleWord(addr, dataIn);
+    break;
 
-      default:
-        throw IllegalAccess("Invalid size " + std::to_string(size));
-    }
+  default:
+    throw IllegalAccess("Invalid size " + std::to_string(size));
+  }
 }

@@ -9,10 +9,7 @@
 
 #include <iostream>
 
-Serial::Serial(const MemAddress base)
-  : base{ base }
-{
-}
+Serial::Serial(const MemAddress base) : base{base} {}
 
 /*
  * MemoryInterface
@@ -41,7 +38,6 @@ Serial::readDoubleWord(MemAddress addr)
 {
   throw IllegalAccess("Not supported on serial interface");
 }
-
 
 void
 Serial::writeByte(MemAddress addr, uint8_t value)

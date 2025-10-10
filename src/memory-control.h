@@ -10,49 +10,43 @@
 
 #include "memory-bus.h"
 
+class InstructionMemory {
+public:
+  InstructionMemory(MemoryBus& bus);
 
-class InstructionMemory
-{
-  public:
-    InstructionMemory(MemoryBus &bus);
+  void setSize(uint8_t size);
+  void setAddress(MemAddress addr);
+  RegValue getValue() const;
 
-    void     setSize(uint8_t size);
-    void     setAddress(MemAddress addr);
-    RegValue getValue() const;
+private:
+  MemoryBus& bus;
 
-  private:
-    MemoryBus &bus;
-
-    uint8_t    size;
-    MemAddress addr;
+  uint8_t size;
+  MemAddress addr;
 };
 
+class DataMemory {
+public:
+  DataMemory(MemoryBus& bus);
 
-class DataMemory
-{
-  public:
-    DataMemory(MemoryBus &bus);
+  void setSize(uint8_t size);
+  void setAddress(MemAddress addr);
+  void setDataIn(RegValue value);
+  void setReadEnable(bool setting);
+  void setWriteEnable(bool setting);
 
-    void setSize(uint8_t size);
-    void setAddress(MemAddress addr);
-    void setDataIn(RegValue value);
-    void setReadEnable(bool setting);
-    void setWriteEnable(bool setting);
+  RegValue getDataOut(bool signExtend) const;
 
-    RegValue getDataOut(bool signExtend) const;
+  void clockPulse() const;
 
-    void clockPulse() const;
+private:
+  MemoryBus& bus;
 
-
-  private:
-    MemoryBus &bus;
-
-    uint8_t size{};
-    MemAddress addr{};
-    RegValue dataIn{};
-    bool readEnable{};
-    bool writeEnable{};
+  uint8_t size{};
+  MemAddress addr{};
+  RegValue dataIn{};
+  bool readEnable{};
+  bool writeEnable{};
 };
-
 
 #endif /* __MEMORY_CONTROL_H__ */

@@ -42,39 +42,31 @@
  *        LAST
  *     };
  */
-template <typename V, typename S>
-class Mux
-{
-  public:
-    void setInput(S input, V value)
-    {
-      if (input == S::LAST)
-        throw std::out_of_range("Cannot set LAST mux input.");
+template <typename V, typename S> class Mux {
+public:
+  void setInput(S input, V value)
+  {
+    if (input == S::LAST)
+      throw std::out_of_range("Cannot set LAST mux input.");
 
-      values[static_cast<int>(input)] = value;
-    }
+    values[static_cast<int>(input)] = value;
+  }
 
-    void setSelector(S selector)
-    {
-      if (selector == S::LAST)
-        throw std::out_of_range("Cannot set LAST as mux selector.");
+  void setSelector(S selector)
+  {
+    if (selector == S::LAST)
+      throw std::out_of_range("Cannot set LAST as mux selector.");
 
-      this->selector = selector;
-    }
+    this->selector = selector;
+  }
 
-    S getSelector() const
-    {
-      return selector;
-    }
+  S getSelector() const { return selector; }
 
-    V getOutput() const
-    {
-      return values[static_cast<int>(selector)];
-    }
+  V getOutput() const { return values[static_cast<int>(selector)]; }
 
-  private:
-    S selector;
-    std::array<V, static_cast<size_t>(S::LAST)> values;
+private:
+  S selector;
+  std::array<V, static_cast<size_t>(S::LAST)> values;
 };
 
 #endif /* __MUX_H__ */

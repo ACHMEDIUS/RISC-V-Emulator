@@ -7,8 +7,8 @@
 
 #include "memory-bus.h"
 
-MemoryBus::MemoryBus(std::vector<std::unique_ptr<MemoryInterface> > &&clients)
-  : clients{ std::move(clients) }
+MemoryBus::MemoryBus(std::vector<std::unique_ptr<MemoryInterface>>&& clients)
+    : clients{std::move(clients)}
 {
 }
 
@@ -31,7 +31,6 @@ MemoryBus::getBytesWritten() const
 {
   return bytesWritten;
 }
-
 
 uint8_t
 MemoryBus::readByte(MemAddress addr)
@@ -99,27 +98,27 @@ MemoryBus::contains(MemAddress addr) const
 void
 MemoryBus::clockPulse()
 {
-  for (auto &client : clients)
+  for (auto& client : clients)
     client->clockPulse();
 }
 
 /*
  * Private methods
  */
-MemoryInterface *
+MemoryInterface*
 MemoryBus::findClient(MemAddress addr) noexcept
 {
-  for (auto &client : clients)
+  for (auto& client : clients)
     if (client->contains(addr))
       return client.get();
 
   return nullptr;
 }
 
-MemoryInterface *
+MemoryInterface*
 MemoryBus::getClient(MemAddress addr)
 {
-  auto *client = findClient(addr);
+  auto* client = findClient(addr);
   if (!client)
     throw IllegalAccess(addr);
 

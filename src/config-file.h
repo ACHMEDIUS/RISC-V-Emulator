@@ -10,38 +10,36 @@
 
 #include <string>
 
-#include <vector>
 #include <list>
 #include <map>
+#include <vector>
 
-class ConfigFile
-{
-  public:
-    using KeyValue = std::pair<std::string, std::string>;
+class ConfigFile {
+public:
+  using KeyValue = std::pair<std::string, std::string>;
 
-    ConfigFile(std::string_view filename);
+  ConfigFile(std::string_view filename);
 
-    void load(std::string_view filename);
+  void load(std::string_view filename);
 
-    bool hasSection(std::string_view sectionName) const;
-    const std::list<std::string> &getSections() const;
+  bool hasSection(std::string_view sectionName) const;
+  const std::list<std::string>& getSections() const;
 
-    bool hasProperty(std::string_view sectionName,
-                     std::string_view keyName) const;
-    std::vector<KeyValue> getProperties(std::string_view sectionName) const;
+  bool hasProperty(std::string_view sectionName,
+                   std::string_view keyName) const;
+  std::vector<KeyValue> getProperties(std::string_view sectionName) const;
 
-  private:
-    using PropertyName = std::pair<std::string, std::string>;
-    using PropertyMap = std::map<PropertyName, std::string>;
-    PropertyMap properties{};
+private:
+  using PropertyName = std::pair<std::string, std::string>;
+  using PropertyMap = std::map<PropertyName, std::string>;
+  PropertyMap properties{};
 
-    std::list<std::string> sections{};
+  std::list<std::string> sections{};
 
-    void clear();
+  void clear();
 
-    void addSection(std::string_view sectionName);
-    void addProperty(const PropertyName &propertyName,
-                     std::string_view value);
+  void addSection(std::string_view sectionName);
+  void addProperty(const PropertyName& propertyName, std::string_view value);
 };
 
 #endif /* __CONFIG_FILE__ */
