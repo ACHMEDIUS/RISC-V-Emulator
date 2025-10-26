@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      UV_PYTHON: "3.12"
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync project
+        run: uv sync --locked --all-extras --dev
+
+      - name: Build emulator
+        run: uvx python -m scripts.build
+
+      - name: Run tests
+        run: uvx python -m scripts.test_runner

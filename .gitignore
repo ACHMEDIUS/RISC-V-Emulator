@@ -20,8 +20,8 @@ env/
 # uv
 .uv/
 
-# Generated deliverables
-deliverables/
+# Node
+node_modules/
 
 # IDEs
 .vscode/
@@ -47,5 +47,9 @@ Thumbs.db
 # Documentation builds
 docs/_build/
 
+# Generated deliverables
+deliverables/
+
 # Miscellaneous
 *.local.md
+lab2*/

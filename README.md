@@ -187,6 +187,11 @@ The emulator is tested against 10 difficulty levels:
 - **InstructionFormatter:** Disassemble to assembly text
 - **Pipeline Registers:** IF_ID, ID_EX, EX_MEM, MEM_WB
 
+## Automation
+
+- **GitHub Actions:** `.github/workflows/ci.yaml` installs uv, builds the emulator, and runs the full Python test suite on every push and pull request.
+- **Husky Hooks:** After running `npm install`, the `pre-commit` hook uses `uvx` to format Python and C++ sources, build the emulator, and execute the tests before allowing a commit.
+
 ## Academic Integrity Notice
 
 This project is part of an academic assignment. If you are a student:

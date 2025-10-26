@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -e
+
+uvx --project . --with ruff python -m scripts.format_python
+uvx --project . python -m scripts.format_cpp
+uvx --project . python -m scripts.build
+uvx --project . python -m scripts.test_runner
