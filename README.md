@@ -1,4 +1,4 @@
-# rv64-emu - RISC-V 64-bit Processor Emulator
+# RISC-V 64-bit Processor Emulator
 
 A classic 5-stage pipelined RISC-V processor emulator implementing the RV64I instruction set.
 
@@ -31,7 +31,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # 2. Install project dependencies
 uv sync
 
-# 3. Build the emulator
+# 3. Activate the virtual environment
+source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+
+# 4. Build the emulator
 uv run build
 ```
 
@@ -56,6 +59,17 @@ uv run build
 # Run a unit test
 ./src/rv64-emu -t src/tests/add.conf
 ```
+
+### Building and Testing Without uv
+
+The project can also be built with the provided Makefile and Python scripts directly:
+
+```bash
+make -C src           # Compile the emulator without uv tooling
+python src/test_instructions.py
+```
+
+This assumes the prerequisites are available on your `PATH`; the resulting binary is written to `src/rv64-emu`.
 
 ## Development Workflow
 
