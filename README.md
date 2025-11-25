@@ -1,3 +1,12 @@
+<!-- github markdown trick -->
+> [!CAUTION]
+> ## Academic Integrity Notice
+>
+> This project is part of an academic assignment. If you are a student:
+> - You **must** implement the core emulator logic yourself
+> - Using this repository's tooling/infrastructure is allowed
+> - Copying implementation code from others violates academic integrity policies
+
 # RISC-V 64-bit Processor Emulator
 
 A classic 5-stage pipelined RISC-V processor emulator implementing the RV64I instruction set.
@@ -191,13 +200,6 @@ The emulator is tested against 10 difficulty levels:
 
 - **GitHub Actions:** `.github/workflows/ci.yaml` installs uv, builds the emulator, and runs the full Python test suite on every push and pull request.
 - **Husky Hooks:** After running `npm install`, the `pre-commit` hook uses `uvx` to format Python and C++ sources, build the emulator, and execute the tests before allowing a commit.
-
-## Academic Integrity Notice
-
-This project is part of an academic assignment. If you are a student:
-- You **must** implement the core emulator logic yourself
-- Using this repository's tooling/infrastructure is allowed
-- Copying implementation code from others violates academic integrity policies
 
 ## License
 
